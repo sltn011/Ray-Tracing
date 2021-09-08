@@ -62,6 +62,7 @@ add_library(RayTracingUtils STATIC
 	"./src/WindowManager.cpp"
 	"./src/Camera.cpp"
 	"./src/ScreenQuad.cpp"
+	"./src/Shapes/BaseShape.cpp"
 	"./src/Shapes/Sphere.cpp"
 )
 

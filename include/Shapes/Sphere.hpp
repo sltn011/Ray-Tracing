@@ -2,11 +2,12 @@
 #define RT_SHAPES_SPHERE
 
 #include "glm/glm.hpp"
+#include "Shapes/BaseShape.hpp"
 
 class Shader;
 
 
-class Sphere {
+class Sphere : public BaseShape {
 
 public:
 
