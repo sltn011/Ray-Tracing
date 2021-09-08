@@ -31,16 +31,16 @@ out vec4 FragColor;
 
 float HitPoint(Sphere S, vec3 Ray, float t, vec3 Origin) {
 	float a = dot(Ray, Ray);
-	float b = 2 * dot(Ray, Origin - S.Position);
+	float half_b = dot(Ray, Origin - S.Position);
 	float c = dot(Origin - S.Position, Origin - S.Position) - S.Radius * S.Radius;
 
-	float discriminant = b * b - 4 * a * c;
+	float discriminant = half_b * half_b - a * c;
 
 	if (discriminant < 0.0) {
 		return -1.0;
 	}
 	else {
-		return (-b - sqrt(discriminant)) / (2.0 * a);
+		return (-half_b - sqrt(discriminant) / a);
 	}
 }
 
