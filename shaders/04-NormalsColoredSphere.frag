@@ -28,21 +28,15 @@ uniform Sphere USphere;
 out vec4 FragColor;
 
 
+// Check if Ray sent from Origin point intersects with Sphere S
+// Impact point can be calculated as Origin + Ray * t
+//
+// if such t value exists and it lies in range [tMin; tMax] then 
+// first value in returned pair is 1 and second value is equal to t
+// otherwise both values are 0
+vec2 ImpactPoint(Sphere S, vec3 Ray, float tMin, float tMax, vec3 Origin);
 
-float HitPoint(Sphere S, vec3 Ray, float t, vec3 Origin) {
-	float a = dot(Ray, Ray);
-	float half_b = dot(Ray, Origin - S.Position);
-	float c = dot(Origin - S.Position, Origin - S.Position) - S.Radius * S.Radius;
 
-	float discriminant = half_b * half_b - a * c;
-
-	if (discriminant < 0.0) {
-		return -1.0;
-	}
-	else {
-		return (-half_b - sqrt(discriminant) / a);
-	}
-}
 
 void main() {
 
@@ -59,26 +53,37 @@ void main() {
 
 	vec3 Ray = BottomLeftVec + (WidthVec * gl_FragCoord.x / (UImageWidth - 1)) + (HeightVec * gl_FragCoord.y / (UImageHeight - 1));
 
-	float t = 0.0;
-	bool bHit = false;
-	while (length(Ray * t) < MAX_LENGTH) {
-
-		t += 0.01;
-
-		float HitPoint = HitPoint(USphere, Ray, t, UCamera.Position);
-		if (HitPoint >= 0.0) {
-			bHit = true;
-
-			vec3 ImpactNormal = normalize(UCamera.Position + Ray * HitPoint - USphere.Position); // [-1; +1]
-			vec3 ImpactNormalRGB = normalize((ImpactNormal + 1.0) / 2.0); // [0; +1]
-			FragColor = vec4(ImpactNormalRGB, 1.0);
-
-			break;
-		}
-
+	vec2 ImpactResult = ImpactPoint(USphere, Ray, 0.0, float(MAX_LENGTH), UCamera.Position);
+	if (bool(ImpactResult.x)) {
+		vec3 ImpactNormal = normalize(UCamera.Position + Ray * ImpactResult.y - USphere.Position); // [-1; +1]
+		vec3 ImpactNormalRGB = normalize((ImpactNormal + 1.0) / 2.0); // [0; +1]
+		FragColor = vec4(ImpactNormalRGB, 1.0);
 	}
-
-	if (!bHit) {
+	else {
 		FragColor = vec4(0.53, 0.80, 0.92, 1.0);
+	}
+}
+
+
+
+vec2 ImpactPoint(Sphere S, vec3 Ray, float tMin, float tMax, vec3 Origin) {
+	float a = dot(Ray, Ray);
+	float half_b = dot(Ray, Origin - S.Position);
+	float c = dot(Origin - S.Position, Origin - S.Position) - S.Radius * S.Radius;
+
+	float discriminant = half_b * half_b - a * c;
+
+	if (discriminant < 0.0) {
+		return vec2(0.0, 0.0); // no impact
+	}
+	else {
+		float t = (-half_b - sqrt(discriminant)) / a; // First root
+		if (t < tMin || t > tMax) { // If first root not in [tMin; tMax] try second one
+			t = (-half_b + sqrt(discriminant)) / a;
+			if (t < tMin || t > tMax) {
+				return vec2(0.0, 0.0); // If second root not in [tMin; tMax] - no impact
+			}
+		}
+		return vec2(1.0, t);
 	}
 }
