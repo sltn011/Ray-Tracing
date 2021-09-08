@@ -76,6 +76,7 @@ target_link_libraries(RayTracingUtils glad glfw)
 add_executable(01-ImageCreation example/01-ImageCreation.cpp)
 add_executable(02-ImageCreationGPU example/02-ImageCreationGPU.cpp)
 add_executable(03-SimpleSphere example/03-SimpleSphere.cpp)
+add_executable(04-NormalsColoredSphere example/04-NormalsColoredSphere.cpp)
 ######################################################################################################
 
 
@@ -83,4 +84,5 @@ add_executable(03-SimpleSphere example/03-SimpleSphere.cpp)
 ######################################################################################################
 target_link_libraries(02-ImageCreationGPU RayTracingUtils)
 target_link_libraries(03-SimpleSphere RayTracingUtils)
+target_link_libraries(04-NormalsColoredSphere RayTracingUtils)
 ######################################################################################################

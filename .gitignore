@@ -30,3 +30,8 @@
 *.exe
 *.out
 *.app
+
+# Dependency files
+dependencies/GLAD/build/*
+dependencies/GLFW/build/*
+dependencies/GLM/build/*
