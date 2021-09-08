@@ -11,7 +11,7 @@ class WindowManager {
 
 public:
 
-    WindowManager(int32_t Width, int32_t Height);
+    WindowManager(int32_t Width, int32_t Height, int32_t Samples = 1);
 
     ~WindowManager();
 

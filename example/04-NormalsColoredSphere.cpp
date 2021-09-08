@@ -7,12 +7,12 @@
 #include "WindowManager.hpp"
 
 constexpr float AspectRation = 16.0f / 9.0f;
-constexpr int ImageWidth = 800;
+constexpr int ImageWidth = 1000;
 constexpr int ImageHeight = static_cast<int>(ImageWidth / AspectRation);
 
 
 int main() {
-    WindowManager Manager(ImageWidth, ImageHeight);
+    WindowManager Manager(ImageWidth, ImageHeight, 256);
     Camera Cam(glm::vec3{ 0.0f, 0.0f, 0.0f }, glm::vec3{ 0.0f, 0.0f, -1.0f }, 2.0f);
     Sphere Obj(glm::vec3{ 0.0f, 0.0f, -3.0f }, 1.0f, glm::vec4{ 1.0f, 0.0f, 0.0f, 1.0f });
     

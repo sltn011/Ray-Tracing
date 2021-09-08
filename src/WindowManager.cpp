@@ -12,7 +12,7 @@
 
 #include <vector>
 
-WindowManager::WindowManager(int32_t Width, int32_t Height) {
+WindowManager::WindowManager(int32_t Width, int32_t Height, int32_t Samples) {
 
     if (!glfwInit()) {
         throw Exception("Error initializing GLFW!");
@@ -21,6 +21,7 @@ WindowManager::WindowManager(int32_t Width, int32_t Height) {
     glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+    glfwWindowHint(GLFW_SAMPLES, Samples);
 
     m_Window = glfwCreateWindow(Width, Height, "", NULL, NULL);
     if (!m_Window) {
@@ -35,6 +36,7 @@ WindowManager::WindowManager(int32_t Width, int32_t Height) {
         throw Exception("Failed to initialize GLAD");
     }
 
+    glEnable(GL_MULTISAMPLE);
     glViewport(0, 0, Width, Height);
 
     glfwSetWindowUserPointer(m_Window, this);
