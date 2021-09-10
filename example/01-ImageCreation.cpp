@@ -7,7 +7,7 @@ int main() {
 
     constexpr int MaxColorValue = 255;
 
-    constexpr char *FileName = "images/01-1-FirstImage.ppm";
+    constexpr char const * const FileName = "images/01-1-FirstImage.ppm";
     std::ofstream ImageFile(FileName);
 
     ImageFile << "P3\n"; // Colors are in ASCII
