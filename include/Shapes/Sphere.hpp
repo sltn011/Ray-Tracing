@@ -11,11 +11,11 @@ class Sphere : public BaseShape {
 
 public:
 
-    Sphere(glm::vec3 Position, float Radius, glm::vec4 Color);
+    Sphere(glm::vec3 Position, float Radius, glm::vec4 Color = glm::vec4{ 1.0f, 1.0f, 1.0f, 1.0f });
 
-    void LoadInShader(Shader &ShaderProgramm);
+    virtual void LoadInShader(Shader &ShaderProgramm) override;
 
-    void LoadInShader(Shader &ShaderProgramm, int32_t Index);
+    virtual void LoadInShader(Shader &ShaderProgramm, int32_t Index) override;
 
     glm::vec3 m_Position;
     float     m_Radius;

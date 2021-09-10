@@ -7,6 +7,8 @@ class Shader;
 
 struct Camera {
 
+    Camera();
+
     Camera(glm::vec3 Position, glm::vec3 Direction, float ViewportWidth);
 
     void LoadInShader(Shader &ShaderProgramm);

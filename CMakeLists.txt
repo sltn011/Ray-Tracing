@@ -60,8 +60,10 @@ add_library(RayTracingUtils STATIC
 	"./src/Exception.cpp"
 	"./src/Shader.cpp"
 	"./src/WindowManager.cpp"
+	"./src/Scene.cpp"
 	"./src/Camera.cpp"
 	"./src/ScreenQuad.cpp"
+	"./src/Shapes/ShapeTypes.cpp"
 	"./src/Shapes/BaseShape.cpp"
 	"./src/Shapes/Sphere.cpp"
 )
@@ -79,6 +81,7 @@ add_executable(02-ImageCreationGPU example/02-ImageCreationGPU.cpp)
 add_executable(03-SimpleSphere example/03-SimpleSphere.cpp)
 add_executable(04-NormalsColoredSphere example/04-NormalsColoredSphere.cpp)
 add_executable(05-Antialiasing example/05-Antialiasing.cpp)
+add_executable(06-MultipleObjects example/06-MultipleObjects.cpp)
 ######################################################################################################
 
 
@@ -88,4 +91,5 @@ target_link_libraries(02-ImageCreationGPU RayTracingUtils)
 target_link_libraries(03-SimpleSphere RayTracingUtils)
 target_link_libraries(04-NormalsColoredSphere RayTracingUtils)
 target_link_libraries(05-Antialiasing RayTracingUtils)
+target_link_libraries(06-MultipleObjects RayTracingUtils)
 ######################################################################################################
