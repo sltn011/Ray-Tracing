@@ -14,6 +14,8 @@
 
 WindowManager::WindowManager(int32_t Width, int32_t Height, int32_t Samples) {
 
+    m_NumSamples = Samples;
+
     if (!glfwInit()) {
         throw Exception("Error initializing GLFW!");
     }
@@ -21,7 +23,7 @@ WindowManager::WindowManager(int32_t Width, int32_t Height, int32_t Samples) {
     glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
-    glfwWindowHint(GLFW_SAMPLES, Samples);
+
 
     m_Window = glfwCreateWindow(Width, Height, "", NULL, NULL);
     if (!m_Window) {
@@ -31,12 +33,15 @@ WindowManager::WindowManager(int32_t Width, int32_t Height, int32_t Samples) {
 
     glfwMakeContextCurrent(m_Window);
 
+    // Force specified window size
+    glfwSetWindowSizeLimits(m_Window, GLFW_DONT_CARE, GLFW_DONT_CARE, Width, Height);
+    glfwSetWindowSize(m_Window, Width, Height);
+
     if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress)) {
         CleanUp();
         throw Exception("Failed to initialize GLAD");
     }
 
-    glEnable(GL_MULTISAMPLE);
     glViewport(0, 0, Width, Height);
 
     glfwSetWindowUserPointer(m_Window, this);
@@ -73,6 +78,7 @@ void WindowManager::Render(Shader &ShaderProgramm) {
     }
 
     ShaderProgramm.use();
+    ShaderProgramm.setUniformInt("UNumSamples", m_NumSamples);
     ShaderProgramm.setUniformInt("UImageWidth", ImageWidth);
     ShaderProgramm.setUniformInt("UImageHeight", ImageHeight);
 

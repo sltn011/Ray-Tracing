@@ -31,6 +31,8 @@ private:
 
     GLFWwindow *m_Window;
 
+    int32_t m_NumSamples;
+
 };
 
 #endif // RT_WINDOWMANAGER
