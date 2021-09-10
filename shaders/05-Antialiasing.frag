@@ -63,7 +63,7 @@ void main() {
 
 	int wVal = int(gl_FragCoord.x);
 	int hVal = int(gl_FragCoord.y);
-	vec4 TotalColor;
+	vec4 TotalColor = vec4(0.0);
 	for (int i = 0; i < UNumSamples; ++i) {
 		float wOff = sin(wVal) / 2.0;
 		float hOff = cos(hVal) / 2.0;
