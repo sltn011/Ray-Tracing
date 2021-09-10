@@ -63,7 +63,7 @@ void main() {
 
 	int wVal = int(gl_FragCoord.x);
 	int hVal = int(gl_FragCoord.y);
-
+	vec4 TotalColor;
 	for (int i = 0; i < UNumSamples; ++i) {
 		float wOff = sin(wVal) / 2.0;
 		float hOff = cos(hVal) / 2.0;
@@ -74,14 +74,14 @@ void main() {
 		HitResult Result = ImpactPoint(USphere, Ray, 0.0, float(MAX_LENGTH), UCamera.Position);
 		if (Result.bHit) {
 			vec3 ImpactNormalRGB = normalize((Result.ImpactNormal + 1.0) / 2.0); // [0; +1]
-			FragColor += vec4(ImpactNormalRGB, 1.0);
+			TotalColor += vec4(ImpactNormalRGB, 1.0);
 		}
 		else {
-			FragColor += vec4(0.53, 0.80, 0.92, 1.0);
+			TotalColor += vec4(0.53, 0.80, 0.92, 1.0);
 		}
 	}
 
-	FragColor.xyz /= UNumSamples;
+	FragColor = TotalColor / UNumSamples;
 	
 }
 
