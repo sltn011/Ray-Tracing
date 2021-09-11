@@ -21,7 +21,7 @@ void Scene::LoadInShader(Shader &ShaderProgramm) {
         std::string UValueName = std::string{ "U" } + ShapeTypesUtils::GetShapeTypeName(p.first) + std::string{ "Num" };
         ShaderProgramm.setUniformInt(UValueName, static_cast<int32_t>(p.second.size()));
         for (size_t i = 0; i < p.second.size(); ++i) {
-            p.second[i]->LoadInShader(ShaderProgramm, i);
+            p.second[i]->LoadInShader(ShaderProgramm, static_cast<int32_t>(i));
         }
     }
 }

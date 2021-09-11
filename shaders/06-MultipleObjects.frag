@@ -52,10 +52,16 @@ HitResult ImpactPoint(Sphere Object, vec3 Ray, float tMin, float tMax, vec3 Orig
 // Traces closest object with Ray sent from Origin point
 HitResult TraceClosestObject(vec3 Ray, float tMin, float tMax, vec3 Origin);
 
-int GetRandomInt(int x);
+// RANDOM
+void InitRandom();
+int GetRandomInt();
+float GetRandomFloatNormalized();
+int RandomSeed;
 
 
 void main() {
+
+	InitRandom();
 
 	float UViewportHeight = UCamera.ViewportWidth * (float(UImageHeight) / float(UImageWidth));
 
@@ -68,15 +74,11 @@ void main() {
 
 	vec3 BottomLeftVec = UCamera.Direction - vec3(WidthVec / 2.0) - vec3(HeightVec / 2.0);
 
-	int wVal = int(gl_FragCoord.x);
-	int hVal = int(gl_FragCoord.y);
 	vec4 TotalColor = vec4(0.0);
 	for (int Sample = 0; Sample < UNumSamples; ++Sample) {
-		float wOff = sin(wVal) / 2.0;
-		float hOff = cos(hVal) / 2.0;
+		float wOff = GetRandomFloatNormalized() / 2.0;
+		float hOff = GetRandomFloatNormalized() / 2.0;
 		vec3 Ray = BottomLeftVec + (WidthVec * (gl_FragCoord.x + wOff) / (UImageWidth - 1)) + (HeightVec * (gl_FragCoord.y + hOff) / (UImageHeight - 1));
-		wVal = GetRandomInt(wVal);
-		hVal = GetRandomInt(hVal);
 
 		HitResult ClosestHit = TraceClosestObject(Ray, 0.0, float(MAX_LENGTH), UCamera.Position);
 
@@ -145,9 +147,19 @@ HitResult TraceClosestObject(vec3 Ray, float tMin, float tMax, vec3 Origin) {
 	return ClosestResult;
 }
 
-int GetRandomInt(int x) {
+void InitRandom() {
+	RandomSeed = int(gl_FragCoord.x * UImageWidth + gl_FragCoord.y);
+}
+
+int GetRandomInt() {
 	int a = 48271;
 	int c = 0;
 	int m = 2147483647;
-	return (a * x + c) % m;
+	RandomSeed = (a * RandomSeed + c) % m;
+	return RandomSeed;
+}
+
+float GetRandomFloatNormalized() {
+	int n = GetRandomInt();
+	return sin(n);
 }
