@@ -22,6 +22,7 @@ struct HitResult {
 	bool bHit;				// True if ray intersected some object
 	vec3 ImpactPoint;		// Location of impact
 	vec3 ImpactNormal;		// Normal vector at impact point - outside of object
+	vec4 ImpactPointColor;  // Color of hit object
 	bool bFrontFacing;		// True if ray intersected object from outside
 	float RayMultiplier;	// ImpactPoint = Origin + Ray * RayMultiplier
 	int HitObjectID;		// Unique ID of intersected object
@@ -47,6 +48,9 @@ out vec4 FragColor;
 //
 // if such t value exists and it lies in range [tMin; tMax] then it is considered as Ray-Object intersection
 HitResult ImpactPoint(Sphere Object, vec3 Ray, float tMin, float tMax, vec3 Origin);
+
+// Traces closest object with Ray sent from Origin point
+HitResult TraceClosestObject(vec3 Ray, float tMin, float tMax, vec3 Origin);
 
 int GetRandomInt(int x);
 
@@ -74,27 +78,16 @@ void main() {
 		wVal = GetRandomInt(wVal);
 		hVal = GetRandomInt(hVal);
 
-		vec4 SampleColor = vec4(0.0);
-		bool bWasHit = false;
-		float SampleSmallestRayMultiplier = float(MAX_LENGTH);
-		for (int SphereIndex = 0; SphereIndex < USphereNum; ++SphereIndex) {
+		HitResult ClosestHit = TraceClosestObject(Ray, 0.0, float(MAX_LENGTH), UCamera.Position);
 
-			HitResult Result = ImpactPoint(USphere[SphereIndex], Ray, 0.0, float(MAX_LENGTH), UCamera.Position);
-
-			if (Result.bHit && Result.RayMultiplier < SampleSmallestRayMultiplier) {
-				bWasHit = true;
-				SampleSmallestRayMultiplier = Result.RayMultiplier;
-				vec3 ImpactNormalRGB = normalize((Result.ImpactNormal + 1.0) / 2.0); // [0; +1]
-				SampleColor = vec4(ImpactNormalRGB, 1.0);
-			}
-
+		if (ClosestHit.bHit) {
+			vec3 HitNormal = ClosestHit.ImpactNormal;
+			vec3 HitNormalRGB = (HitNormal + 1.0) / 2.0;
+			TotalColor += vec4(HitNormalRGB, 1.0);
 		}
-
-		if (!bWasHit) {
-			SampleColor = vec4(0.53, 0.80, 0.92, 1.0);
+		else {
+			TotalColor += vec4(0.53, 0.80, 0.92, 1.0);
 		}
-
-		TotalColor += SampleColor;
 	}
 
 	FragColor = TotalColor / UNumSamples;
@@ -127,11 +120,29 @@ HitResult ImpactPoint(Sphere Object, vec3 Ray, float tMin, float tMax, vec3 Orig
 		Result.bHit = true;
 		Result.ImpactPoint = Origin + Ray * t;
 		Result.ImpactNormal = normalize(Result.ImpactPoint - Object.Position);
+		Result.ImpactPointColor = Object.Color;
 		Result.bFrontFacing = bool(dot(Result.ImpactNormal, Ray) < 0.0);
 		Result.RayMultiplier = t;
 		Result.HitObjectID = Object.ID;
 		return Result;
 	}
+}
+
+HitResult TraceClosestObject(vec3 Ray, float tMin, float tMax, vec3 Origin) {
+	float SampleSmallestRayMultiplier = float(MAX_LENGTH);
+
+	HitResult ClosestResult;
+	ClosestResult.bHit = false;
+
+	for (int SphereIndex = 0; SphereIndex < USphereNum; ++SphereIndex) {
+		HitResult Result = ImpactPoint(USphere[SphereIndex], Ray, tMin, tMax, UCamera.Position);
+		if (Result.bHit && Result.RayMultiplier < SampleSmallestRayMultiplier) {
+			SampleSmallestRayMultiplier = Result.RayMultiplier;
+			ClosestResult = Result;
+		}
+	}
+
+	return ClosestResult;
 }
 
 int GetRandomInt(int x) {
